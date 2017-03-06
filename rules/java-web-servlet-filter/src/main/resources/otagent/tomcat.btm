@@ -1,0 +1,19 @@
+
+RULE Tomcat servlet filter installation
+CLASS org.apache.catalina.core.ApplicationContext
+METHOD <init>
+HELPER io.opentracing.contrib.agent.OpenTracingHelper
+BIND
+  filter:io.opentracing.contrib.web.servlet.filter.TracingFilter =
+  		new io.opentracing.contrib.web.servlet.filter.TracingFilter(getTracer(),
+  			java.util.Collections.singletonList(io.opentracing.contrib.web.servlet.filter.SpanDecorator.STANDARD_TAGS));
+  patterns:String[] = new String[1];
+AT EXIT
+IF TRUE
+DO
+  patterns[0] = "/*";
+  $0.addFilter("tracingFilter", filter).addMappingForUrlPatterns(java.util.EnumSet.allOf(javax.servlet.DispatcherType.class),
+  								true, patterns);
+ENDRULE
+
+

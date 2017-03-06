@@ -1,0 +1,21 @@
+
+RULE Custom instrumentation rule sayHello entry
+CLASS io.opentracing.contrib.agent.custom.CustomRuleITest
+METHOD sayHello()
+HELPER io.opentracing.contrib.agent.OpenTracingHelper
+AT ENTRY
+IF TRUE
+DO
+  activateSpan(getTracer().buildSpan("TestSpan").start());
+ENDRULE
+
+RULE Custom instrumentation rule sayHello exit
+CLASS io.opentracing.contrib.agent.custom.CustomRuleITest
+METHOD sayHello()
+HELPER io.opentracing.contrib.agent.OpenTracingHelper
+AT EXIT
+IF currentSpan() != null
+DO
+  currentSpan().setTag("status.code","OK").finish();
+  deactivateCurrentSpan();
+ENDRULE

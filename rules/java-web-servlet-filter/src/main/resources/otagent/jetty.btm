@@ -1,0 +1,23 @@
+
+# State 0 - no filter installed
+# State 1 - filter installed
+
+RULE Jetty servlet filter installation
+CLASS org.eclipse.jetty.servlet.ServletContextHandler
+METHOD <init>
+HELPER io.opentracing.contrib.agent.OpenTracingHelper
+BIND
+  filter:io.opentracing.contrib.web.servlet.filter.TracingFilter =
+  		new io.opentracing.contrib.web.servlet.filter.TracingFilter(getTracer(),
+  			java.util.Collections.singletonList(io.opentracing.contrib.web.servlet.filter.SpanDecorator.STANDARD_TAGS));
+  patterns:String[] = new String[1];
+AT EXIT
+IF getState($0.getServletContext()) == 0
+DO
+  patterns[0] = "/*";
+  $0.getServletContext().addFilter("tracingFilter", filter).addMappingForUrlPatterns(java.util.EnumSet.allOf(javax.servlet.DispatcherType.class),
+  								true, patterns);
+  setState($0.getServletContext(), 1);
+ENDRULE
+
+
