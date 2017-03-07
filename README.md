@@ -24,6 +24,22 @@ can also be used by the application code to access the current active span to ad
 
 The Java Agent can be used in two ways:
 
+### Prepackaged Agent, Tracer and Dependencies
+
+This approach is to build an uber jar, using the maven assembly or shade plugins, to package together
+the `opentracing-agent.jar`, the OpenTracing compliant `Tracer`, any framework integrations, rules, etc.
+
+The important point to remember is that, because the resulting jar will still be used as a javaagent, it needs the
+manifest entries copied from the manifest in the `opentracing-agent.jar`.
+
+This approach is useful when wanting to instrument applications where modification of the classpath is not
+possible (e.g. executable jars), or wanting to maintain separation between the application and the tracing
+mechanism. It also benefits from being able to selective choose the framework integrations (and versions) that
+are required.
+
+NOTE: An [issue](https://github.com/opentracing-contrib/java-agent/issues/3) has been created to discuss providing tool support for this option.
+
+
 ### Tracer and Framework Integrations on Classpath
 
 This approach uses the plain `opentracing-agent.jar` provided by this project, and obtains the OpenTracing
@@ -68,19 +84,6 @@ and then launch the application using
 ```
 mvn spring-boot:run -Drun.jvmArguments=-javaagent:/path/to/opentracing-agent.jar
 ```
-
-### Uber Jar
-
-The other approach is to build an uber jar, using the maven assembly plugin, to package together
-the `opentracing-agent.jar`, the OpenTracing compliant `Tracer`, any framework integrations, rules, etc.
-
-The important point to remember is that, because the resulting jar will still be used as a javaagent, it needs the
-manifest entries copied from the manifest in the `opentracing-agent.jar`.
-
-This approach is useful when wanting to instrument applications where modification of the classpath is not
-possible (e.g. executable jars), or wanting to maintain separation between the application and the tracing
-mechanism.
-
 
 ## Creating custom rules
 
