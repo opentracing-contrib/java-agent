@@ -44,13 +44,13 @@ public class OpenTracingHelper extends Helper {
 
     private static final Logger log = Logger.getLogger(OpenTracingHelper.class.getName());
 
-    private static Tracer tracer = new AgentTracer(GlobalTracer.get());
-    private static SpanManager spanManager = DefaultSpanManager.getInstance();
+    private static final Tracer tracer = new AgentTracer(GlobalTracer.get());
+    private static final SpanManager spanManager = DefaultSpanManager.getInstance();
 
-    private static Map<Object,Span> spanAssociations = Collections.synchronizedMap(new WeakHashMap<Object,Span>());
-    private static Map<Object,Span> finished = Collections.synchronizedMap(new WeakHashMap<Object,Span>());
+    private static final Map<Object,Span> spanAssociations = Collections.synchronizedMap(new WeakHashMap<Object,Span>());
+    private static final Map<Object,Span> finished = Collections.synchronizedMap(new WeakHashMap<Object,Span>());
 
-    private static Map<Object,Integer> state = Collections.synchronizedMap(new WeakHashMap<Object,Integer>());
+    private static final Map<Object,Integer> state = Collections.synchronizedMap(new WeakHashMap<Object,Integer>());
 
     public OpenTracingHelper(Rule rule) {
         super(rule);
@@ -137,8 +137,13 @@ public class OpenTracingHelper extends Helper {
     /**
      * This method enables an instrumentation rule to record a 'state'
      * number against an application object. This can be used in
-     * subsequent rules to determine what the valid actions that
-     * can be performed.
+     * situations where rules are only applicable in certain states.
+     * For example, the simple case for rules responsible for installing
+     * filters would be states representing NOT_INSTALLED and INSTALLED. This
+     * means that the filter would only be installed if the application
+     * object (target of the instrumentation rule) was in the NOT_INSTALLED
+     * state. However other more complex scenarios may be encountered where
+     * more than two states are required.
      *
      * @param obj The application object
      * @param value The state value

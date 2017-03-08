@@ -17,7 +17,9 @@
 package io.opentracing.contrib.agent.custom;
 
 import static org.junit.Assert.assertEquals;
-import java.io.IOException;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.List;
 
 import org.junit.Test;
@@ -31,8 +33,8 @@ import io.opentracing.mock.MockSpan;
 public class CustomRuleITest extends OTAgentTestBase {
 
     @Test
-    public void testRequest() throws IOException {
-        sayHello();
+    public void testRequest() throws Exception {
+        sayHello(false);
         
         List<MockSpan> spans = getTracer().finishedSpans();
         
@@ -43,6 +45,25 @@ public class CustomRuleITest extends OTAgentTestBase {
         assertEquals("OK", spans.get(0).tags().get("status.code"));
     }
 
+    @Test
+    public void testException() throws Exception {
+        try {
+            sayHello(true);
+            fail("Exception expected");
+        } catch (Exception e) {
+            // Expected
+        }
+
+        List<MockSpan> spans = getTracer().finishedSpans();
+
+        // Check that a Span was created with operation name
+        // 'TestSpan' and tags recording the status code and error.
+        assertEquals(1, spans.size());
+        assertEquals("TestSpan", spans.get(0).operationName());
+        assertEquals("FAILED", spans.get(0).tags().get("status.code"));
+        assertTrue((boolean)spans.get(0).tags().get("error"));
+    }
+
     /**
      * When this method is invoked, the ByteMan rule defined in
      * src/test/resources/otagent/custom.btm will cause a 'TestSpan' span
@@ -50,7 +71,10 @@ public class CustomRuleITest extends OTAgentTestBase {
      * from the method, a tag will be added to the span recording
      * the 'status.code' of "OK" before the span is finished.
      */
-    public void sayHello() {
+    public void sayHello(boolean fail) throws Exception {
+        if (fail) {
+            throw new Exception("Failed to say hello");
+        }
     }
 
 }

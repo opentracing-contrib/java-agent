@@ -51,8 +51,6 @@ public class OpenTracingManager {
     private static final String PATH_JAR_SEPARATOR = "!/";
     private static final String FILE_SCHEME = "file:";
 
-    private static Retransformer transformer;
-
     /**
      * This method initializes the manager.
      *
@@ -60,8 +58,6 @@ public class OpenTracingManager {
      * @throws Exception
      */
     public static void initialize(Retransformer trans) throws Exception {
-        transformer = trans;
-
         List<String> scripts = new ArrayList<>();
         List<String> scriptNames = new ArrayList<>();
 
@@ -73,7 +69,7 @@ public class OpenTracingManager {
 
         try (PrintWriter writer = new PrintWriter(new StringWriter())) {
             try {
-                transformer.installScript(scripts, scriptNames, writer);
+                trans.installScript(scripts, scriptNames, writer);
             } catch (Exception e) {
                 log.log(Level.SEVERE, "Failed to install scripts", e);
             }
