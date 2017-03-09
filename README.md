@@ -49,41 +49,12 @@ Tracer and any required framework integrations, rules, etc. from the classpath.
 java -javaagent path/to/opentracing-agent.jar ...
 ```
 
-#### Spring Boot Example
+## Examples
 
-If instrumenting a Spring Boot application, add the following to the pom.xml:
+This section lists examples of using the OpenTracing Java Agent.
 
-```xml
-    <!-- OpenTracing Tracer dependencies -->
-    ....
+* [Spring Boot services](https://github.com/objectiser/java-agent-spring-boot-example) (OpenTracing Tracer: Hawkular APM)
 
-    <!-- OpenTracing Contrib JavaAgent Rules for any directly instrumented technologies
-         (and framework integrations currently until the rules are moved into the
-         framework integration artifacts) -->
-    <dependency>
-      <groupId>io.opentracing.contrib</groupId>
-      <artifactId>opentracing-agent-rules-java-net</artifactId>
-      <version>...</version>
-    </dependency>
-    <dependency>
-      <groupId>io.opentracing.contrib</groupId>
-      <artifactId>opentracing-agent-rules-java-web-servlet-filter</artifactId>
-      <version>...</version>
-    </dependency>
-
-    <!-- OpenTracing Contrib Framework Integrations for the frameworks used by the application -->
-    <dependency>
-      <groupId>io.opentracing.contrib</groupId>
-      <artifactId>opentracing-web-servlet-filter</artifactId>
-      <version>...</version>
-    </dependency>
-```
-
-and then launch the application using
-
-```
-mvn spring-boot:run -Drun.jvmArguments=-javaagent:/path/to/opentracing-agent.jar
-```
 
 ## Creating custom rules
 
