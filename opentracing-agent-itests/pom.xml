@@ -4,7 +4,7 @@
   <parent>
     <artifactId>opentracing-agent-parent</artifactId>
     <groupId>io.opentracing.contrib</groupId>
-    <version>0.0.8</version>
+    <version>0.0.9-SNAPSHOT</version>
   </parent>
 
   <artifactId>opentracing-agent-itests</artifactId>
