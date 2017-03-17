@@ -46,7 +46,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <version.com.squareup.okhttp3>3.6.0</version.com.squareup.okhttp3>
-    <version.io.opentracing>0.20.8</version.io.opentracing>
+    <version.io.opentracing>0.20.10</version.io.opentracing>
     <version.io.opentracing.contrib.globaltracer>0.1.0</version.io.opentracing.contrib.globaltracer>
     <version.io.opentracing.contrib.web-servlet-filter>0.0.3</version.io.opentracing.contrib.web-servlet-filter>
     <version.io.opentracing.contrib.okhttp3>0.0.1</version.io.opentracing.contrib.okhttp3>
