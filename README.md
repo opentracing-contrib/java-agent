@@ -62,8 +62,7 @@ Custom rules are defined using the [ByteMan](http://byteman.jboss.org/) rule for
 a helper class (_io.opentracing.contrib.agent.OpenTracingHelper_) that provides access to the OpenTracing Tracer,
 as well as some additional support capabilities.
 
-The custom rules should be placed in a folder on the classpath called `otagent`, and have the file extension
-`btm`.
+The custom rules should be placed in a file on the classpath called `otarules.btm`.
 
 Some example rules are:
 
