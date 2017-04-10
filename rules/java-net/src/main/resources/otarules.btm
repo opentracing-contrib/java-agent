@@ -13,7 +13,7 @@ DO
     .asChildOf(currentSpan())
     .start());
   getTracer().inject(retrieveSpan($0).context(), io.opentracing.propagation.Format$Builtin.HTTP_HEADERS,
-    new io.opentracing.contrib.agent.jnet.propagation.HttpURLConnectionInjectAdapter($0));
+    new io.opentracing.contrib.agent.javanet.propagation.HttpURLConnectionInjectAdapter($0));
 ENDRULE
 
 RULE java-net: Java HttpUrlConnection getResponseCode entry
@@ -30,7 +30,7 @@ DO
     .asChildOf(currentSpan())
     .start());
   getTracer().inject(retrieveSpan($0).context(), io.opentracing.propagation.Format$Builtin.HTTP_HEADERS,
-     new io.opentracing.contrib.agent.jnet.propagation.HttpURLConnectionInjectAdapter($0));
+     new io.opentracing.contrib.agent.javanet.propagation.HttpURLConnectionInjectAdapter($0));
 ENDRULE
 
 RULE java-net: Java HttpUrlConnection getInputStream entry
@@ -47,7 +47,7 @@ DO
     .asChildOf(currentSpan())
     .start());
   getTracer().inject(retrieveSpan($0).context(), io.opentracing.propagation.Format$Builtin.HTTP_HEADERS,
-    new io.opentracing.contrib.agent.jnet.propagation.HttpURLConnectionInjectAdapter($0));
+    new io.opentracing.contrib.agent.javanet.propagation.HttpURLConnectionInjectAdapter($0));
 ENDRULE
 
 RULE java-net: Java HttpUrlConnection getOutputStream entry
@@ -64,7 +64,7 @@ DO
     .asChildOf(currentSpan())
     .start());
   getTracer().inject(retrieveSpan($0).context(), io.opentracing.propagation.Format$Builtin.HTTP_HEADERS,
-    new io.opentracing.contrib.agent.jnet.propagation.HttpURLConnectionInjectAdapter($0));
+    new io.opentracing.contrib.agent.javanet.propagation.HttpURLConnectionInjectAdapter($0));
 ENDRULE
 
 # This rule catches connection refused exceptions
