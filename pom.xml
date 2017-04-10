@@ -55,6 +55,7 @@
     <version.org.apache.tomcat.embed>8.0.41</version.org.apache.tomcat.embed>
     <version.org.eclipse.jetty>9.4.1.v20170120</version.org.eclipse.jetty>
     <version.org.jboss.byteman>3.0.6</version.org.jboss.byteman>
+    <version.org.springframework.boot>1.5.2.RELEASE</version.org.springframework.boot>
 
     <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
     <version.maven-release-plugin>2.5.3</version.maven-release-plugin>
