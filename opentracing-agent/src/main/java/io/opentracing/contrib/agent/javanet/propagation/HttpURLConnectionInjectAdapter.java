@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.opentracing.contrib.agent.jnet.propagation;
+package io.opentracing.contrib.agent.javanet.propagation;
 
 import java.net.HttpURLConnection;
 import java.util.Iterator;
