@@ -169,6 +169,11 @@ ENDRULE
 ./mvnw clean install
 ```
 
+If using JDK9, you will need to set the _MAVEN_OPTS_ as follows:
+```shell
+MAVEN_OPTS="--add-modules java.se.ee" ./mvnw clean install
+```
+
 ## Release
 Follow instructions in [RELEASE](RELEASE.md)
 
