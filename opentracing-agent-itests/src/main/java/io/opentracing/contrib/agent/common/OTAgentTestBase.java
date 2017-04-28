@@ -18,9 +18,9 @@ package io.opentracing.contrib.agent.common;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import io.opentracing.contrib.global.GlobalTracer;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.mock.MockTracer.Propagator;
+import io.opentracing.util.GlobalTracer;
 
 /**
  * @author gbrown

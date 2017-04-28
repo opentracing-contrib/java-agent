@@ -46,8 +46,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <version.com.squareup.okhttp3>3.6.0</version.com.squareup.okhttp3>
-    <version.io.opentracing>0.21.0</version.io.opentracing>
-    <version.io.opentracing.contrib.globaltracer>0.1.0</version.io.opentracing.contrib.globaltracer>
+    <version.io.opentracing>0.22.0</version.io.opentracing>
+    <version.io.opentracing.contrib.tracerresolver>0.1.0</version.io.opentracing.contrib.tracerresolver>
     <version.io.opentracing.contrib.web-servlet-filter>0.0.3</version.io.opentracing.contrib.web-servlet-filter>
     <version.io.opentracing.contrib.okhttp3>0.0.2</version.io.opentracing.contrib.okhttp3>
     <version.io.opentracing.contrib.spanmanager>0.0.3</version.io.opentracing.contrib.spanmanager>
@@ -74,6 +74,11 @@
       </dependency>
       <dependency>
         <groupId>io.opentracing</groupId>
+        <artifactId>opentracing-util</artifactId>
+        <version>${version.io.opentracing}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing</groupId>
         <artifactId>opentracing-noop</artifactId>
         <version>${version.io.opentracing}</version>
       </dependency>
@@ -84,8 +89,8 @@
       </dependency>
       <dependency>
         <groupId>io.opentracing.contrib</groupId>
-        <artifactId>opentracing-globaltracer</artifactId>
-        <version>${version.io.opentracing.contrib.globaltracer}</version>
+        <artifactId>opentracing-tracerresolver</artifactId>
+        <version>${version.io.opentracing.contrib.tracerresolver}</version>
       </dependency>
       <dependency>
         <groupId>io.opentracing.contrib</groupId>

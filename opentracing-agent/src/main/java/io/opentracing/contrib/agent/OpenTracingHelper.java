@@ -19,7 +19,6 @@ package io.opentracing.contrib.agent;
 import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,11 +30,12 @@ import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.Tracer.SpanBuilder;
-import io.opentracing.contrib.global.GlobalTracer;
 import io.opentracing.contrib.spanmanager.DefaultSpanManager;
 import io.opentracing.contrib.spanmanager.SpanManager;
 import io.opentracing.contrib.spanmanager.SpanManager.ManagedSpan;
+import io.opentracing.contrib.tracerresolver.TracerResolver;
 import io.opentracing.propagation.Format;
+import io.opentracing.util.GlobalTracer;
 
 /**
  * This class provides helper capabilities to the byteman rules.
@@ -44,13 +44,15 @@ public class OpenTracingHelper extends Helper {
 
     private static final Logger log = Logger.getLogger(OpenTracingHelper.class.getName());
 
-    private static final Tracer tracer = new AgentTracer(GlobalTracer.get());
+    private static Tracer tracer;
     private static final SpanManager spanManager = DefaultSpanManager.getInstance();
 
     private static final Map<Object,Span> spanAssociations = Collections.synchronizedMap(new WeakHashMap<Object,Span>());
     private static final Map<Object,Span> finished = Collections.synchronizedMap(new WeakHashMap<Object,Span>());
 
     private static final Map<Object,Integer> state = Collections.synchronizedMap(new WeakHashMap<Object,Integer>());
+
+    private static final Object SYNC = new Object();
 
     public OpenTracingHelper(Rule rule) {
         super(rule);
@@ -62,7 +64,32 @@ public class OpenTracingHelper extends Helper {
      * @return The tracer
      */
     public Tracer getTracer() {
+        if (tracer == null) {
+            // Initialize on first use
+            initTracer();
+        }
         return tracer;
+    }
+
+    protected void initTracer() {
+        synchronized (SYNC) {
+            if (tracer == null) {
+                if (!GlobalTracer.isRegistered()) {
+                    // Try to obtain a tracer using the TracerResolver
+                    Tracer resolved = TracerResolver.resolveTracer();
+                    if (resolved != null) {
+                        try {
+                            GlobalTracer.register(resolved);
+                        } catch (RuntimeException re) {
+                            log.log(Level.WARNING, "Failed to register tracer '" + resolved + "'", re);
+                        }
+                    }
+                }
+                // Initialize the tracer even if one has not been registered
+                // (i.e. it will use a NoopTracer under the covers)
+                tracer = new AgentTracer(GlobalTracer.get());
+            }
+        }
     }
 
     /**
@@ -226,11 +253,6 @@ public class OpenTracingHelper extends Helper {
 
         public AgentSpanBuilder(SpanBuilder spanBuilder) {
             this.spanBuilder = spanBuilder;
-        }
-
-        @Override
-        public Iterable<Entry<String, String>> baggageItems() {
-            return spanBuilder.baggageItems();
         }
 
         @Override
