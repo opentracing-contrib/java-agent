@@ -26,8 +26,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jboss.byteman.agent.Retransformer;
 
@@ -36,8 +34,6 @@ import org.jboss.byteman.agent.Retransformer;
  *
  */
 public class OpenTracingManager {
-
-    private static Logger log = Logger.getLogger(OpenTracingManager.class.getName());
 
     private static final String AGENT_RULES = "otarules.btm";
 
@@ -63,7 +59,7 @@ public class OpenTracingManager {
      */
     public static void loadRules(ClassLoader classLoader) {
         if (transformer == null) {
-            log.severe("Attempt to load OpenTracing agent rules before transformer initialized");
+            AgentLogger.error("Attempt to load OpenTracing agent rules before transformer initialized");
             return;
         }
 
@@ -82,26 +78,22 @@ public class OpenTracingManager {
                 try {
                     transformer.installScript(scripts, scriptNames, writer);
                 } catch (Exception e) {
-                    log.log(Level.SEVERE, "Failed to install scripts", e);
+                    AgentLogger.error("Failed to install scripts: " + e);
                 }
             }
-            if (log.isLoggable(Level.FINEST)) {
-                log.finest(sw.toString());
-            }
+
+            AgentLogger.debug(sw.toString());
+
         } catch (IOException | URISyntaxException e) {
-            log.log(Level.SEVERE, "Failed to load OpenTracing agent rules", e);
+            AgentLogger.error("Failed to load OpenTracing agent rules: " + e);
         }
         
-        if (log.isLoggable(Level.FINE)) {
-            log.fine("OpenTracing Agent rules loaded");
-        }
+        AgentLogger.debug("OpenTracing Agent rules loaded");
     }
 
     private static void loadRules(URI uri, final List<String> scriptNames,
                     final List<String> scripts) throws IOException {
-        if (log.isLoggable(Level.FINE)) {
-            log.fine("Load rules from URI = " + uri);
-        }
+        AgentLogger.debug("Load rules from URI = " + uri);
 
         StringBuilder str=new StringBuilder();
         try (InputStream is = uri.toURL().openStream()) {
