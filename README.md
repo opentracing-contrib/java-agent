@@ -16,8 +16,8 @@ or add tags to an existing span to identify business relevant properties)
 
 ## Usage
 
-The _Java Agent for OpenTracing_ obtains an OpenTracing compliant Tracer using the
-[Global Tracer](https://github.com/opentracing-contrib/java-globaltracer) project. It makes use of the
+The _Java Agent for OpenTracing_ obtains an OpenTracing compliant Tracer using the GlobalTracer from the 
+[opentracing util](https://github.com/opentracing/opentracing-java/tree/master/opentracing-util) project. It makes use of the
 [Span Manager](https://github.com/opentracing-contrib/java-spanmanager) project to manage the
 propagation of active Spans through various frameworks and technologies used by the application - which
 can also be used by the application code to access the current active span to add tags or create its own Spans.
