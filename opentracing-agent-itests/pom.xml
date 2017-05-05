@@ -16,11 +16,11 @@
   <dependencies>
     <dependency>
       <groupId>io.opentracing</groupId>
-      <artifactId>opentracing-mock</artifactId>
+      <artifactId>opentracing-util</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.opentracing.contrib</groupId>
-      <artifactId>opentracing-globaltracer</artifactId>
+      <groupId>io.opentracing</groupId>
+      <artifactId>opentracing-mock</artifactId>
     </dependency>
 
     <dependency>

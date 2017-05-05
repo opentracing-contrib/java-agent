@@ -16,14 +16,43 @@
  */
 package io.opentracing.contrib.agent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Field;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import io.opentracing.NoopTracerFactory;
 import io.opentracing.Span;
+import io.opentracing.Tracer;
+import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
+import io.opentracing.util.GlobalTracer;
 
 public class OpenTracingHelperTest {
+
+    // Approach used in opentracing-util GlobalTracerTest to reset the global tracer
+    private static void _setGlobal(Tracer tracer) {
+        try {
+            Field globalTracerField = GlobalTracer.class.getDeclaredField("tracer");
+            globalTracerField.setAccessible(true);
+            globalTracerField.set(null, tracer);
+            globalTracerField.setAccessible(false);
+        } catch (Exception e) {
+            throw new RuntimeException("Error reflecting globalTracer: " + e.getMessage(), e);
+        }
+    }
+
+    @Before
+    @After
+    public void clearGlobalTracer() {
+        _setGlobal(NoopTracerFactory.create());
+    }
 
     @Test
     public void testActivateDeactivateSpan() {
@@ -64,4 +93,27 @@ public class OpenTracingHelperTest {
 
         assertEquals(5, helper.getState(obj));
     }
+
+    @Test(expected=DummyTracer.DummyCalled.class)
+    public void testGetTracerResolved() {
+        OpenTracingHelper helper = new OpenTracingHelper(null);
+        Tracer tracer = helper.getTracer();
+
+        assertNotNull(tracer);
+
+        tracer.buildSpan("Test");
+    }
+
+    @Test
+    public void testGetTracerExisting() {
+        GlobalTracer.register(new MockTracer());
+
+        OpenTracingHelper helper = new OpenTracingHelper(null);
+        Tracer tracer = helper.getTracer();
+
+        assertNotNull(tracer);
+
+        assertTrue(tracer.buildSpan("Test").start() instanceof MockSpan);
+    }
+
 }

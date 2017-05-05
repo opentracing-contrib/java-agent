@@ -8,8 +8,7 @@ METHOD <init>
 HELPER io.opentracing.contrib.agent.OpenTracingHelper
 BIND
   filter:io.opentracing.contrib.web.servlet.filter.TracingFilter =
-  		new io.opentracing.contrib.web.servlet.filter.TracingFilter(getTracer(),
-  			java.util.Collections.singletonList(io.opentracing.contrib.web.servlet.filter.SpanDecorator.STANDARD_TAGS));
+        new io.opentracing.contrib.web.servlet.filter.TracingFilter(getTracer());
   patterns:String[] = new String[1];
 AT EXIT
 IF getState($0.getServletContext()) == 0
@@ -26,8 +25,7 @@ METHOD <init>
 HELPER io.opentracing.contrib.agent.OpenTracingHelper
 BIND
   filter:io.opentracing.contrib.web.servlet.filter.TracingFilter =
-  		new io.opentracing.contrib.web.servlet.filter.TracingFilter(getTracer(),
-  			java.util.Collections.singletonList(io.opentracing.contrib.web.servlet.filter.SpanDecorator.STANDARD_TAGS));
+         new io.opentracing.contrib.web.servlet.filter.TracingFilter(getTracer());
   patterns:String[] = new String[1];
 AT EXIT
 IF TRUE
