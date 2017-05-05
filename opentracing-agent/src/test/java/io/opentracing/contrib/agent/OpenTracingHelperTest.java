@@ -16,7 +16,10 @@
  */
 package io.opentracing.contrib.agent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 
@@ -91,19 +94,14 @@ public class OpenTracingHelperTest {
         assertEquals(5, helper.getState(obj));
     }
 
-    @Test
+    @Test(expected=DummyTracer.DummyCalled.class)
     public void testGetTracerResolved() {
         OpenTracingHelper helper = new OpenTracingHelper(null);
         Tracer tracer = helper.getTracer();
 
         assertNotNull(tracer);
 
-        try {
-            tracer.buildSpan("Test");
-            fail("Service loadable DummyTracer was not used");
-        } catch (DummyTracer.DummyCalled e) {
-            // Ignore
-        }
+        tracer.buildSpan("Test");
     }
 
     @Test
