@@ -26,13 +26,12 @@ import java.util.logging.Logger;
 import org.jboss.byteman.rule.Rule;
 import org.jboss.byteman.rule.helper.Helper;
 
+import io.opentracing.ActiveSpan;
+import io.opentracing.BaseSpan;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.Tracer.SpanBuilder;
-import io.opentracing.contrib.spanmanager.DefaultSpanManager;
-import io.opentracing.contrib.spanmanager.SpanManager;
-import io.opentracing.contrib.spanmanager.SpanManager.ManagedSpan;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
 import io.opentracing.propagation.Format;
 import io.opentracing.util.GlobalTracer;
@@ -45,7 +44,6 @@ public class OpenTracingHelper extends Helper {
     private static final Logger log = Logger.getLogger(OpenTracingHelper.class.getName());
 
     private static Tracer tracer;
-    private static final SpanManager spanManager = DefaultSpanManager.getInstance();
 
     private static final Map<Object,Span> spanAssociations = Collections.synchronizedMap(new WeakHashMap<Object,Span>());
     private static final Map<Object,Span> finished = Collections.synchronizedMap(new WeakHashMap<Object,Span>());
@@ -90,40 +88,6 @@ public class OpenTracingHelper extends Helper {
                 tracer = new AgentTracer(GlobalTracer.get());
             }
         }
-    }
-
-    /**
-     * This method requests that the supplied span becomes the
-     * current 'active' span.
-     *
-     * @param span The span
-     */
-    public void activateSpan(Span span) {
-        spanManager.activate(span);
-    }
-
-    /**
-     * This method returns the currently active span.
-     *
-     * @return The current span, or null if no active span exists
-     */
-    public Span currentSpan() {
-        return spanManager.current().getSpan();
-    }
-
-    /**
-     * This method requests that the current active span
-     * should be deactivated. If the underlying
-     * span management mechanism maintains a stack, then
-     * this will result in the previous (unfinished) parent
-     * span being reinstated as the current active span.
-     *
-     * @return The span being deactivated, or null if no active span found
-     */
-    public Span deactivateCurrentSpan() {
-        ManagedSpan current = spanManager.current();
-        current.deactivate();
-        return current.getSpan();
     }
 
     /**
@@ -245,6 +209,16 @@ public class OpenTracingHelper extends Helper {
         public <C> void inject(SpanContext ctx, Format<C> format, C carrier) {
             tracer.inject(ctx, format, carrier);
         }
+
+        @Override
+        public ActiveSpan activeSpan() {
+            return tracer.activeSpan();
+        }
+
+        @Override
+        public ActiveSpan makeActive(Span span) {
+            return tracer.makeActive(span);
+        }
     }
 
     public static class AgentSpanBuilder implements SpanBuilder {
@@ -272,7 +246,7 @@ public class OpenTracingHelper extends Helper {
         }
 
         @Override
-        public SpanBuilder asChildOf(Span span) {
+        public SpanBuilder asChildOf(BaseSpan<?> span) {
             if (span != null) {
                 spanBuilder.asChildOf(span);
             }
@@ -306,6 +280,22 @@ public class OpenTracingHelper extends Helper {
         public SpanBuilder withTag(String name, Number value) {
             spanBuilder.withTag(name, value);
             return this;
+        }
+
+        @Override
+        public SpanBuilder ignoreActiveSpan() {
+            spanBuilder.ignoreActiveSpan();
+            return this;
+        }
+
+        @Override
+        public ActiveSpan startActive() {
+            return spanBuilder.startActive();
+        }
+
+        @Override
+        public Span startManual() {
+            return spanBuilder.startManual();
         }
 
     }

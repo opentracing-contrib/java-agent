@@ -5,9 +5,7 @@
 Java Agent for instrumenting Java applications using an OpenTracing compliant Tracer.
 
 The instrumentation is performed in a non-intrusive manner leveraging the [ByteMan project](http://byteman.jboss.org/) to
-define a set of rules. These rules can be used in three ways:
-
-* Directly instrument a technology/framework (e.g. java.net.HttpURLConnection)
+define a set of rules. These rules can be used to:
 
 * Install a framework integration (e.g. OkHttp, Servlet)
 
@@ -17,10 +15,10 @@ or add tags to an existing span to identify business relevant properties)
 ## Usage
 
 The _Java Agent for OpenTracing_ obtains an OpenTracing compliant Tracer using the GlobalTracer from the 
-[opentracing util](https://github.com/opentracing/opentracing-java/tree/master/opentracing-util) project. It makes use of the
-[Span Manager](https://github.com/opentracing-contrib/java-spanmanager) project to manage the
-propagation of active Spans through various frameworks and technologies used by the application - which
-can also be used by the application code to access the current active span to add tags or create its own Spans.
+[opentracing util](https://github.com/opentracing/opentracing-java/tree/master/opentracing-util) project.
+If a tracer has not been registered, it will then use the
+[TracerResolver](https://github.com/opentracing-contrib/java-tracerresolver) mechanism to attempt to access
+one from the maven dependencies.
 
 The Java Agent can be used in two ways:
 
@@ -74,7 +72,7 @@ HELPER io.opentracing.contrib.agent.OpenTracingHelper
 AT ENTRY
 IF TRUE
 DO
-  activateSpan(getTracer().buildSpan("MySpan").start());
+  getTracer().buildSpan("MySpan").startActive();
 ENDRULE
 ```
 
@@ -90,29 +88,27 @@ The _IF_ statement enables a predicate to be defined to guard whether the rule i
 The _DO_ clause identifies the actions to be performed when the rule is triggered.
 
 The `getTracer()` method (provided by the _OpenTracingHelper_) is used to access the OpenTracing
-compliant `Tracer`. The helper class also provides methods for managing the current active span
-(i.e. `activateSpan`).
-
-NOTE: Span management is being actively discussed in the OpenTracing standard so this area may change in the
-near future.
+compliant `Tracer`.
 
 ```
-RULE Custom instrumentation rule sayHello exit
-CLASS example.MyClass
-METHOD sayHello()
+RULE Custom instrumentation rule sayHello normal exit
+CLASS io.opentracing.contrib.agent.custom.CustomRuleITest
+METHOD sayHello
 HELPER io.opentracing.contrib.agent.OpenTracingHelper
+BIND
+  span : io.opentracing.ActiveSpan = getTracer().activeSpan();
 AT EXIT
-IF currentSpan() != null
+IF span != null
 DO
-  currentSpan().setTag("status.code","OK").finish();
-  deactivateCurrentSpan();
+  span.setTag("status.code","OK");
+  span.deactivate();
 ENDRULE
 ```
 This rule will trigger _AT EXIT_, so when the method is finished. The _IF_ statement checks whether there
-is a current span, so will only trigger if an active span exists.
+is an active span (assigned to the bound variable `span`), so will only trigger if an active span exists.
 
-The actions performed in this case are to set a tag _status.code_ on the current span, and then finish it.
-Finally the current span needs to be deactivated so that it is no longer considered the active span.
+The actions performed in this case are to set a tag _status.code_ on the active span, and then finally the
+active span needs to be deactivated.
 
 
 ## Supported framework integrations and directly instrumented technologies
@@ -139,30 +135,6 @@ Currently supported containers:
 
 Framework integration repo: [OkHttp](https://github.com/opentracing-contrib/java-okhttp)
 
-
-### Directly instrumented technologies
-
-#### HttpURLConnection
-
-The instrumentation rules for HttpURLConnection will only create a Span if the connection does not
-have a request property _opentracing.ignore_. This is to avoid REST calls, used to report tracing information
-to a server, resulting in further trace information being reported. Therefore any _Tracer_ implementations
-that use HttpURLConnection to report their data to the server should ensure the connections have this request
-property.
-
-It is also possible to include a custom rule to add such a property:
-
-```
-RULE Ignore server communications
-CLASS java.net.URL
-METHOD openConnection
-HELPER io.opentracing.contrib.agent.OpenTracingHelper
-AT EXIT
-IF $0.getPath().startsWith("/TracerServerPath")
-DO
-  $!.setRequestProperty("opentracing.ignore","true");
-ENDRULE
-```
 
 ## Development
 ```shell

@@ -18,7 +18,6 @@ package io.opentracing.contrib.agent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
@@ -52,23 +51,6 @@ public class OpenTracingHelperTest {
     @After
     public void clearGlobalTracer() {
         _setGlobal(NoopTracerFactory.create());
-    }
-
-    @Test
-    public void testActivateDeactivateSpan() {
-        OpenTracingHelper helper = new OpenTracingHelper(null);
-
-        Span span = new MockTracer().buildSpan("Test").start();
-
-        assertNull(helper.currentSpan());
-
-        helper.activateSpan(span);
-
-        assertEquals(span, helper.currentSpan());
-
-        helper.deactivateCurrentSpan();
-
-        assertNull(helper.currentSpan());
     }
 
     @Test
@@ -113,7 +95,7 @@ public class OpenTracingHelperTest {
 
         assertNotNull(tracer);
 
-        assertTrue(tracer.buildSpan("Test").start() instanceof MockSpan);
+        assertTrue(tracer.buildSpan("Test").startManual() instanceof MockSpan);
     }
 
 }

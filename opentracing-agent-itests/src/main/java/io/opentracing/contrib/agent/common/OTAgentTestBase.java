@@ -21,13 +21,14 @@ import org.junit.BeforeClass;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.mock.MockTracer.Propagator;
 import io.opentracing.util.GlobalTracer;
+import io.opentracing.util.ThreadLocalActiveSpanSource;
 
 /**
  * @author gbrown
  */
 public class OTAgentTestBase {
 
-    private static MockTracer tracer = new MockTracer(Propagator.TEXT_MAP);
+    private static MockTracer tracer = new MockTracer(new ThreadLocalActiveSpanSource(), Propagator.TEXT_MAP);
 
     @BeforeClass
     public static void initClass() throws Exception {

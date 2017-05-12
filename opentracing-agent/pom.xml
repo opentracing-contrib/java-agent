@@ -31,10 +31,6 @@
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-tracerresolver</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.opentracing.contrib</groupId>
-      <artifactId>opentracing-spanmanager</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>io.opentracing</groupId>

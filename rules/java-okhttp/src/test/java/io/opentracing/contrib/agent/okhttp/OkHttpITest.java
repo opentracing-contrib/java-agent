@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import io.opentracing.contrib.agent.common.OTAgentTestBase;
 import io.opentracing.mock.MockSpan;
+import io.opentracing.tag.Tags;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -60,8 +61,9 @@ public class OkHttpITest extends OTAgentTestBase {
 
             List<MockSpan> spans = getTracer().finishedSpans();
 
-            assertEquals(1, spans.size());
+            assertEquals(2, spans.size());
             assertEquals("GET", spans.get(0).operationName());
+            assertEquals("GET", spans.get(1).operationName());
         } finally {
             server.shutdown();
             server.close();
