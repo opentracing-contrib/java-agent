@@ -16,6 +16,8 @@
  */
 package io.opentracing.contrib.agent;
 
+import io.opentracing.ActiveSpan;
+import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
@@ -47,6 +49,16 @@ public class DummyTracer implements Tracer {
 
     public static class DummyCalled extends RuntimeException {
         private static final long serialVersionUID = 1L;
+    }
+
+    @Override
+    public ActiveSpan activeSpan() {
+        return null;
+    }
+
+    @Override
+    public ActiveSpan makeActive(Span arg0) {
+        return null;
     }
     
 }
