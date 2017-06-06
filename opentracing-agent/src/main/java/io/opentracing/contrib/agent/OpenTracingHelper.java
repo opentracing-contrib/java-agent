@@ -20,8 +20,6 @@ import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jboss.byteman.rule.Rule;
 import org.jboss.byteman.rule.helper.Helper;
@@ -40,8 +38,6 @@ import io.opentracing.util.GlobalTracer;
  * This class provides helper capabilities to the byteman rules.
  */
 public class OpenTracingHelper extends Helper {
-
-    private static final Logger log = Logger.getLogger(OpenTracingHelper.class.getName());
 
     private static Tracer tracer;
 
@@ -79,7 +75,7 @@ public class OpenTracingHelper extends Helper {
                         try {
                             GlobalTracer.register(resolved);
                         } catch (RuntimeException re) {
-                            log.log(Level.WARNING, "Failed to register tracer '" + resolved + "'", re);
+                            AgentLogger.error("Failed to register tracer '" + resolved + "': " + re);
                         }
                     }
                 }
@@ -174,8 +170,8 @@ public class OpenTracingHelper extends Helper {
         // then create an Adapter to wrap the specifics of each
         // technology and provide access to their properties
 
-        if (ignore && log.isLoggable(Level.FINEST)) {
-            log.finest("Ignoring request because the property [opentracing.ignore] is present.");
+        if (ignore) {
+            AgentLogger.debug("Ignoring request because the property [opentracing.ignore] is present.");
         }
 
         return ignore;

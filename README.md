@@ -146,6 +146,15 @@ If using JDK9, you will need to set the _MAVEN_OPTS_ as follows:
 MAVEN_OPTS="--add-modules java.se.ee" ./mvnw clean install
 ```
 
+### Debugging loaded rules
+
+To avoid initialization issues with the `LogManager` in WildFly/Swarm, the component that loads the rules
+does not use a logging framework. Errors are reported to stderr.
+
+If you wish to see information about the rules loaded, then define `-Dopentracing.agent.debug=true` on the
+command line.
+
+
 ## Release
 Follow instructions in [RELEASE](RELEASE.md)
 
