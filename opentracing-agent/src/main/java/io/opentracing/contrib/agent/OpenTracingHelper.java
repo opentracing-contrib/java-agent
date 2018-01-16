@@ -26,8 +26,8 @@ import java.util.logging.Logger;
 import org.jboss.byteman.rule.Rule;
 import org.jboss.byteman.rule.helper.Helper;
 
-import io.opentracing.ActiveSpan;
-import io.opentracing.BaseSpan;
+import io.opentracing.Scope;
+import io.opentracing.ScopeManager;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
@@ -211,14 +211,15 @@ public class OpenTracingHelper extends Helper {
         }
 
         @Override
-        public ActiveSpan activeSpan() {
+        public Span activeSpan() {
             return tracer.activeSpan();
         }
 
         @Override
-        public ActiveSpan makeActive(Span span) {
-            return tracer.makeActive(span);
+        public ScopeManager scopeManager() {
+            return tracer.scopeManager();
         }
+
     }
 
     public static class AgentSpanBuilder implements SpanBuilder {
@@ -246,7 +247,7 @@ public class OpenTracingHelper extends Helper {
         }
 
         @Override
-        public SpanBuilder asChildOf(BaseSpan<?> span) {
+        public SpanBuilder asChildOf(Span span) {
             if (span != null) {
                 spanBuilder.asChildOf(span);
             }
@@ -289,11 +290,12 @@ public class OpenTracingHelper extends Helper {
         }
 
         @Override
-        public ActiveSpan startActive() {
-            return spanBuilder.startActive();
+        public Scope startActive(boolean finishOnClose) {
+            return spanBuilder.startActive(finishOnClose);
         }
 
         @Override
+        @Deprecated
         public Span startManual() {
             return spanBuilder.startManual();
         }

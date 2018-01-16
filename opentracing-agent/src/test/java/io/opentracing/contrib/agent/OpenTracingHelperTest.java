@@ -26,11 +26,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.opentracing.NoopTracerFactory;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
+import io.opentracing.noop.NoopTracerFactory;
 import io.opentracing.util.GlobalTracer;
 
 public class OpenTracingHelperTest {
@@ -95,7 +95,7 @@ public class OpenTracingHelperTest {
 
         assertNotNull(tracer);
 
-        assertTrue(tracer.buildSpan("Test").startManual() instanceof MockSpan);
+        assertTrue(tracer.buildSpan("Test").start() instanceof MockSpan);
     }
 
 }
