@@ -6,7 +6,7 @@ HELPER io.opentracing.contrib.agent.OpenTracingHelper
 AT ENTRY
 IF TRUE
 DO
-  getTracer().buildSpan("TestSpan").startActive();
+  getTracer().buildSpan("TestSpan").startActive(true);
 ENDRULE
 
 RULE Custom instrumentation rule sayHello exception exit
@@ -14,12 +14,12 @@ CLASS io.opentracing.contrib.agent.custom.CustomRuleITest
 METHOD sayHello
 HELPER io.opentracing.contrib.agent.OpenTracingHelper
 BIND
-  span : io.opentracing.ActiveSpan = getTracer().activeSpan();
+  scope : io.opentracing.Scope = getTracer().scopeManager().active();
 AT EXCEPTION EXIT
-IF span != null
+IF scope != null
 DO
-  span.setTag("status.code","FAILED").setTag("error",true);
-  span.deactivate();
+  scope.span().setTag("status.code","FAILED").setTag("error",true);
+  scope.close();
 ENDRULE
 
 RULE Custom instrumentation rule sayHello normal exit
@@ -27,10 +27,10 @@ CLASS io.opentracing.contrib.agent.custom.CustomRuleITest
 METHOD sayHello
 HELPER io.opentracing.contrib.agent.OpenTracingHelper
 BIND
-  span : io.opentracing.ActiveSpan = getTracer().activeSpan();
+  scope : io.opentracing.Scope = getTracer().scopeManager().active();
 AT EXIT
-IF span != null
+IF scope != null
 DO
-  span.setTag("status.code","OK");
-  span.deactivate();
+  scope.span().setTag("status.code","OK");
+  scope.close();
 ENDRULE

@@ -16,7 +16,7 @@
  */
 package io.opentracing.contrib.agent;
 
-import io.opentracing.ActiveSpan;
+import io.opentracing.ScopeManager;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
@@ -52,12 +52,12 @@ public class DummyTracer implements Tracer {
     }
 
     @Override
-    public ActiveSpan activeSpan() {
+    public Span activeSpan() {
         return null;
     }
 
     @Override
-    public ActiveSpan makeActive(Span arg0) {
+    public ScopeManager scopeManager() {
         return null;
     }
     
