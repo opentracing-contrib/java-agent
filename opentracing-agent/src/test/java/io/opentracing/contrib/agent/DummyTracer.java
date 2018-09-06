@@ -21,21 +21,28 @@ import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
+import org.jboss.byteman.rule.Rule;
 
 /**
  * This dummy tracer only exists to be service loaded for test purposes.
  *
  */
 public class DummyTracer implements Tracer {
+    /**
+     * Whether or not the tracer was initialized with triggering enabled.
+     */
+    private boolean triggeringEnabled;
 
     public DummyTracer() {
+        triggeringEnabled = Rule.isTriggeringEnabled();
     }
 
     @Override
     public SpanBuilder buildSpan(String operationName) {
-        // For test purposes, simply through a specific exception to indicate that
-        // this tracer was called.
-        throw new DummyCalled();
+        // For test purposes, simply throw a specific exception to indicate that
+        // this tracer was initialized, and whether instrumentation was enabled
+        // when it was created.
+        throw new DummyCalled(triggeringEnabled);
     }
 
     @Override
@@ -49,6 +56,12 @@ public class DummyTracer implements Tracer {
 
     public static class DummyCalled extends RuntimeException {
         private static final long serialVersionUID = 1L;
+
+        public boolean triggeringEnabled;
+
+        private DummyCalled(boolean triggeringEnabled) {
+            this.triggeringEnabled = triggeringEnabled;
+        }
     }
 
     @Override

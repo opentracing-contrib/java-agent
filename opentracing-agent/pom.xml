@@ -44,6 +44,14 @@
       <version>${version.junit}</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>io.opentracing</groupId>
+      <artifactId>opentracing-util</artifactId>
+      <type>test-jar</type>
+      <version>${version.io.opentracing}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
