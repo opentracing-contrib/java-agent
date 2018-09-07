@@ -69,18 +69,40 @@ public class OpenTracingHelper extends Helper {
         return tracer;
     }
 
+    /**
+     * If the property 'io.opentracing.contrib.agent.allowInstrumentedTracer' == "true", then rules
+     * will be allowed to execute in the tracer initialization logic.  This can be problematic if those
+     * rules also initialize the tracer (which could happen especially if it is the first rule to execute)
+     * since they will happen in the same thread and the locking will not apply.
+     */
+    private boolean allowInstrumentedTracer() {
+        return Boolean.parseBoolean(
+                System.getProperty("io.opentracing.contrib.agent.allowInstrumentedTracer"));
+    }
+
     protected void initTracer() {
         synchronized (SYNC) {
             if (tracer == null) {
                 if (!GlobalTracer.isRegistered()) {
-                    // Try to obtain a tracer using the TracerResolver
-                    Tracer resolved = TracerResolver.resolveTracer();
-                    if (resolved != null) {
-                        try {
-                            GlobalTracer.register(resolved);
-                        } catch (RuntimeException re) {
-                            log.log(Level.WARNING, "Failed to register tracer '" + resolved + "'", re);
+                    boolean triggeringState = Rule.isTriggeringEnabled();
+                    if (!allowInstrumentedTracer() && triggeringState) {
+                        // Temporarily disable triggering of rules unless we have explicitly allowed
+                        // the tracer to be instrumented.
+                        setTriggering(false);
+                    }
+                    try {
+                        // Try to obtain a tracer using the TracerResolver
+                        Tracer resolved = TracerResolver.resolveTracer();
+                        if (resolved != null) {
+                            try {
+                                GlobalTracer.register(resolved);
+                            } catch (RuntimeException re) {
+                                log.log(Level.WARNING,
+                                        "Failed to register tracer '" + resolved + "'", re);
+                            }
                         }
+                    } finally {
+                        setTriggering(triggeringState);
                     }
                 }
                 // Initialize the tracer even if one has not been registered

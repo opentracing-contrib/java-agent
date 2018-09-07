@@ -17,12 +17,13 @@
 package io.opentracing.contrib.agent;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.lang.reflect.Field;
-
-import org.junit.After;
+import io.opentracing.contrib.tracerresolver.TracerResolver;
+import io.opentracing.util.GlobalTracerTestUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,27 +31,31 @@ import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
-import io.opentracing.noop.NoopTracerFactory;
 import io.opentracing.util.GlobalTracer;
 
-public class OpenTracingHelperTest {
+import java.lang.reflect.Field;
 
-    // Approach used in opentracing-util GlobalTracerTest to reset the global tracer
-    private static void _setGlobal(Tracer tracer) {
+public class OpenTracingHelperTest {
+    private static void _clearHelperTracer() {
         try {
-            Field globalTracerField = GlobalTracer.class.getDeclaredField("tracer");
-            globalTracerField.setAccessible(true);
-            globalTracerField.set(null, tracer);
-            globalTracerField.setAccessible(false);
+            Field tracerField = OpenTracingHelper.class.getDeclaredField("tracer");
+            tracerField.setAccessible(true);
+            tracerField.set(null, null);
+            tracerField.setAccessible(false);
         } catch (Exception e) {
-            throw new RuntimeException("Error reflecting globalTracer: " + e.getMessage(), e);
+            throw new RuntimeException("Error reflecting OpenTracingHelper: " + e.getMessage(), e);
         }
     }
 
     @Before
-    @After
-    public void clearGlobalTracer() {
-        _setGlobal(NoopTracerFactory.create());
+    public void clearTracers() {
+        GlobalTracerTestUtil.resetGlobalTracer();
+        _clearHelperTracer();
+    }
+
+    @Before
+    public void reloadResolverProviderCaches() {
+        TracerResolver.reload();
     }
 
     @Test
@@ -76,14 +81,39 @@ public class OpenTracingHelperTest {
         assertEquals(5, helper.getState(obj));
     }
 
-    @Test(expected=DummyTracer.DummyCalled.class)
+    @Test
     public void testGetTracerResolved() {
         OpenTracingHelper helper = new OpenTracingHelper(null);
         Tracer tracer = helper.getTracer();
 
         assertNotNull(tracer);
 
-        tracer.buildSpan("Test");
+        try {
+            tracer.buildSpan("Test");
+        } catch (DummyTracer.DummyCalled e) {
+            assertFalse(e.triggeringEnabled);
+            return;
+        }
+        fail("DummyTracer did not initialize properly");
+    }
+
+    @Test
+    public void testGetTracerWithRulesEnabled() {
+        System.setProperty("io.opentracing.contrib.agent.allowInstrumentedTracer", "true");
+        try {
+            OpenTracingHelper helper = new OpenTracingHelper(null);
+            Tracer tracer = helper.getTracer();
+
+            assertNotNull(tracer);
+
+            tracer.buildSpan("test2");
+        } catch(DummyTracer.DummyCalled e) {
+            assertTrue(e.triggeringEnabled);
+            return;
+        } finally {
+            System.clearProperty("io.opentracing.contrib.agent.allowInstrumentedTracer");
+        }
+        fail("DummyTracer did not initialize properly");
     }
 
     @Test
@@ -97,5 +127,4 @@ public class OpenTracingHelperTest {
 
         assertTrue(tracer.buildSpan("Test").start() instanceof MockSpan);
     }
-
 }
