@@ -50,7 +50,7 @@
     <version.io.opentracing.contrib.tracerresolver>0.1.5</version.io.opentracing.contrib.tracerresolver>
     <version.io.opentracing.contrib.web-servlet-filter>0.1.1</version.io.opentracing.contrib.web-servlet-filter>
     <version.io.opentracing.contrib.okhttp3>0.1.0</version.io.opentracing.contrib.okhttp3>
-    <version.io.opentracing.contrib.concurrent>0.2.1-SNAPSHOT</version.io.opentracing.contrib.concurrent>
+    <version.io.opentracing.contrib.concurrent>0.2.0</version.io.opentracing.contrib.concurrent>
     <version.junit>4.12</version.junit>
     <version.org.apache.tomcat.embed>8.0.41</version.org.apache.tomcat.embed>
     <version.org.eclipse.jetty>9.4.1.v20170120</version.org.eclipse.jetty>
