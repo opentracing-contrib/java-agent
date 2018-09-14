@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 public class ScheduledExecutorServiceITest extends AbstractConcurrentTest {
 	private static final int NUMBER_OF_THREADS = 4;
 
-
 	@Test
 	public void scheduleRunnableTest() throws InterruptedException {
 		ScheduledExecutorService executorService = Executors.newScheduledThreadPool(NUMBER_OF_THREADS);

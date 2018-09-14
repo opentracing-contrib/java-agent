@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 public class ExecutorServiceITest extends AbstractConcurrentTest {
 	private static final int NUMBER_OF_THREADS = 4;
 
-
 	@Test
 	public void testExecuteRunnable() throws InterruptedException {
 		ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
