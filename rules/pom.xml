@@ -14,6 +14,7 @@
     <module>java-okhttp</module>
     <module>java-web-servlet-filter</module>
     <module>java-concurrent</module>
+    <module>java-jdbc</module>
   </modules>
 
 </project>

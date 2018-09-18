@@ -51,6 +51,7 @@
     <version.io.opentracing.contrib.web-servlet-filter>0.1.1</version.io.opentracing.contrib.web-servlet-filter>
     <version.io.opentracing.contrib.okhttp3>0.1.0</version.io.opentracing.contrib.okhttp3>
     <version.io.opentracing.contrib.concurrent>0.2.0</version.io.opentracing.contrib.concurrent>
+    <version.io.opentracing.contrib.jdbc>0.0.8</version.io.opentracing.contrib.jdbc>
     <version.junit>4.12</version.junit>
     <version.org.apache.tomcat.embed>8.0.41</version.org.apache.tomcat.embed>
     <version.org.eclipse.jetty>9.4.1.v20170120</version.org.eclipse.jetty>
@@ -63,6 +64,7 @@
     <version.maven-javadoc-plugin>2.10.4</version.maven-javadoc-plugin>
     <version.io.takari-maven>0.3.4</version.io.takari-maven>
     <version.io.zikin.centralsync-maven-plugin>0.1.0</version.io.zikin.centralsync-maven-plugin>
+    <version.com.h2database.h2>1.4.197</version.com.h2database.h2>
   </properties>
 
   <dependencyManagement>
@@ -106,6 +108,16 @@
         <groupId>io.opentracing.contrib</groupId>
         <artifactId>opentracing-concurrent</artifactId>
         <version>${version.io.opentracing.contrib.concurrent}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-jdbc</artifactId>
+        <version>${version.io.opentracing.contrib.jdbc}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>${version.com.h2database.h2}</version>
       </dependency>
       <dependency>
         <groupId>io.opentracing.contrib</groupId>
