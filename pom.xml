@@ -65,6 +65,9 @@
     <version.io.takari-maven>0.3.4</version.io.takari-maven>
     <version.io.zikin.centralsync-maven-plugin>0.1.0</version.io.zikin.centralsync-maven-plugin>
     <version.com.h2database.h2>1.4.197</version.com.h2database.h2>
+    <version.org.mongodb.mongo-java-driver>3.8.1</version.org.mongodb.mongo-java-driver>
+    <version.io.opentracing.contrib.mongo-driver>0.0.6</version.io.opentracing.contrib.mongo-driver>
+    <version.de.bwaldvogel.mongo-java-server>1.8.0</version.de.bwaldvogel.mongo-java-server>
   </properties>
 
   <dependencyManagement>
@@ -115,6 +118,11 @@
         <version>${version.io.opentracing.contrib.jdbc}</version>
       </dependency>
       <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-mongo-driver</artifactId>
+        <version>${version.io.opentracing.contrib.mongo-driver}</version>
+      </dependency>
+      <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
         <version>${version.com.h2database.h2}</version>
@@ -158,6 +166,16 @@
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-jasper</artifactId>
         <version>${version.org.apache.tomcat.embed}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongo-java-driver</artifactId>
+        <version>${version.org.mongodb.mongo-java-driver}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver-async</artifactId>
+        <version>${version.org.mongodb.mongo-java-driver}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

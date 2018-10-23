@@ -15,6 +15,7 @@
     <module>java-web-servlet-filter</module>
     <module>java-concurrent</module>
     <module>java-jdbc</module>
+    <module>java-mongo-driver</module>
   </modules>
 
 </project>

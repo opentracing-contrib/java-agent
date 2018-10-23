@@ -136,6 +136,11 @@ Currently supported containers:
 Framework integration repo: [OkHttp](https://github.com/opentracing-contrib/java-okhttp)
 
 
+#### Mongo Driver
+
+Library integration repo: [Mongo Driver](https://github.com/opentracing-contrib/java-mongo-driver)
+
+
 ## Development
 ```shell
 ./mvnw clean install
