@@ -2,6 +2,8 @@
 
 # Java Agent for OpenTracing
 
+**NOTE: This project is no longer being actively developed. Please see the [special agent](https://github.com/opentracing-contrib/java-specialagent) project as an alternative.**
+
 Java Agent for instrumenting Java applications using an OpenTracing compliant Tracer.
 
 The instrumentation is performed in a non-intrusive manner leveraging the [ByteMan project](http://byteman.jboss.org/) to
